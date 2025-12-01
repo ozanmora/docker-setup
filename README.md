@@ -99,6 +99,12 @@ To use a custom domain like `http://example1.test` instead of `http://localhost/
     docker-compose restart nginx
     ```
 
+### Applying Changes (Workflow)
+*   **New Nginx Config**: Run `docker-compose restart nginx`.
+*   **New Volume in docker-compose**: Run `docker-compose up -d` (this recreates the container with new settings).
+*   **PHP Code Changes**: No restart needed (changes are instant).
+*   **New PHP Extension**: Edit Dockerfile and run `docker-compose up -d --build`.
+
 ### Accessing Services
 
 -   **Web Server**: `http://localhost`
