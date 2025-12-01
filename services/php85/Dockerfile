@@ -1,6 +1,6 @@
 FROM php:8.5-fpm
 
-# Gerekli sistem paketleri ve Git
+# Required system packages and Git
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,15 +13,15 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     mariadb-client
 
-# PHP Eklentileri (Laravel, WP, CI uyumlu)
+# PHP Extensions (Laravel, WP, CI compatible)
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl mysqli
 
-# Composer Kurulumu
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Node.js Kurulumu (LTS sürümü)
+# Install Node.js (LTS version)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Çalışma dizini
+# Working directory
 WORKDIR /var/www

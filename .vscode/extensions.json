@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-docker",
+    "mikestead.dotenv",
+    "redhat.vscode-yaml",
+    "ahmadalli.vscode-nginx-conf",
+    "eamodio.gitlens"
+  ]
+}

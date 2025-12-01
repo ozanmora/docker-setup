@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # --- Web Server ---
+  nginx:
+    volumes:
+      # Map specific local folders to folders inside the container
+      # Format: - /Local/Path:/var/www/container_path
+      
+      # MacOS / Linux Example:
+      # - /Users/username/Projects/example-1/laravel:/var/www/example1-test
+      # - /Users/username/Projects/example-2/wordpress:/var/www/example2-test
+      
+      # Windows Example:
+      # - C:/Users/username/Projects/example-1/laravel:/var/www/example1-test
+      
+      # Keep the default mount if you still want to use the www folder
+      - ${PROJECTS_ROOT}:/var/www:delegated
+
+  # --- PHP Services ---
+  # IMPORTANT: You must map the same volumes to PHP containers so they can execute the code!
+  
+  php85:
+    volumes:
+      # - /Users/username/Projects/example-1/laravel:/var/www/example1-test
+      # - /Users/username/Projects/example-2/wordpress:/var/www/example2-test
+      - ${PROJECTS_ROOT}:/var/www:delegated
+
+  php82:
+    volumes:
+      # - /Users/username/Projects/example-1/laravel:/var/www/example1-test
+      - ${PROJECTS_ROOT}:/var/www:delegated
+
+  php74:
+    volumes:
+      # - /Users/username/Projects/example-2/wordpress:/var/www/example2-test
+      - ${PROJECTS_ROOT}:/var/www:delegated

@@ -1,6 +1,6 @@
 FROM php:7.4-fpm
 
-# Sistem kütüphanelerini yükle
+# Install system libraries
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -12,13 +12,13 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     mariadb-client
 
-# PHP 7.4 Eklentileri (GD, Zip, MySQL vs.)
+# PHP 7.4 Extensions (GD, Zip, MySQL etc.)
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl mysqli
 
-# Composer Kurulumu (Eski PHP sürümleri için 2.2 sürümü daha kararlı olabilir ama latest deneyelim)
+# Install Composer (Latest)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Node.js Kurulumu (PHP 7.4 eski projeler içindir, Node 16 veya 18 daha uygun olabilir ama 20 de genelde çalışır)
+# Install Node.js (Node 18 is suitable for older projects)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 

@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    server_name example-project.test; # Change this to your domain
+    root /var/www/example-project/public; # Change this to your project path inside container
+
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass php85:9000; # Change to php82:9000 or php74:9000 if needed
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
