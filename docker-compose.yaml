@@ -1,0 +1,85 @@
+services:
+  # --- Web Sunucusu ---
+  nginx:
+    image: nginx:alpine
+    container_name: mora_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www:delegated
+      - ./services/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - php85
+      - php82
+      - php74
+    networks:
+      - dev_network
+
+  # --- Veritabanı (MariaDB 11) ---
+  db:
+    image: mariadb:11
+    container_name: mora_mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - dev_network
+
+  # --- PHP 8.5 Container (Laravel/Güncel WP) ---
+  php85:
+    build:
+      context: ./services/php85
+      dockerfile: Dockerfile
+    container_name: mora_php85
+    volumes:
+      - ./www:/var/www:delegated
+    networks:
+      - dev_network
+
+  # --- PHP 8.2 Container (Laravel/Güncel WP) ---
+  php82:
+    build:
+      context: ./services/php82
+      dockerfile: Dockerfile
+    container_name: mora_php82
+    volumes:
+      - ./www:/var/www:delegated
+    networks:
+      - dev_network
+
+  # --- PHP 7.4 Container (Legacy Projeler - Opsiyonel) ---
+  php74:
+    build:
+      context: ./services/php74 # Klasörü ve Dockerfile'ı oluşturduğunuzu varsayıyoruz
+      dockerfile: Dockerfile
+    container_name: mora_php74
+    volumes:
+      - ./www:/var/www:delegated
+    networks:
+      - dev_network
+
+# --- PhpMyAdmin (Opsiyonel ama önerilir) ---
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    ports:
+      - "8080:80"
+    networks:
+      - dev_network
+
+networks:
+  dev_network:
+    driver: bridge
+
+volumes:
+  db_data:

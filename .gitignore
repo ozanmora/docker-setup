@@ -1,0 +1,4 @@
+.DS_Store
+.env
+www/*
+!www/.gitkeep
