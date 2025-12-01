@@ -2,6 +2,5 @@
 .env
 www/*
 !www/.gitkeep
-!www/index.php
 docker-compose.override.yaml
 
