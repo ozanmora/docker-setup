@@ -4,6 +4,7 @@
     "mikestead.dotenv",
     "redhat.vscode-yaml",
     "ahmadalli.vscode-nginx-conf",
-    "eamodio.gitlens"
+    "eamodio.gitlens",
+    "ms-vscode.powershell"
   ]
 }

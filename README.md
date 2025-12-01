@@ -55,8 +55,47 @@ docker-setup/
 └── .env                # Environment variables (PROJECTS_ROOT defined here)
 ```
 
-### Advanced: Mapping Scattered Projects (Recommended)
-If your projects are in different locations (e.g., `~/Projects/example1/laravel` and `~/Projects/example2/wordpress`), you should use a **`docker-compose.override.yaml`** file instead of symlinks. Symlinks often fail with Docker because the container cannot see the file paths on your host machine.
+### Dynamic Project Management (Recommended)
+Instead of adding every single project to `docker-compose.override.yaml`, the best practice is to map your **Main Projects Folder** (e.g., `~/Projects`) using the `PROJECTS_ROOT` variable in `.env`.
+
+1.  **Set Root**: In `.env`, set `PROJECTS_ROOT=/Users/username/Projects`.
+2.  **Automatic Access**: Now, **ALL** subfolders (e.g., `~/Projects/example1/laravel`, `~/Projects/example2/wordpress`) are automatically accessible inside the container at `/var/www/example1/laravel`, `/var/www/example2/wordpress`, etc.
+3.  **Create Site**:
+    *   **Mac/Linux**:
+        ```bash
+        # For Laravel (append /public):
+        ./create-site.sh laravel.test example/laravel/public
+
+        # For WordPress/Standard PHP:
+        ./create-site.sh blog.test example/wordpress
+        ```
+    *   **Windows (PowerShell)**:
+        ```powershell
+        # For Laravel (append /public):
+        ./create-site.ps1 laravel.test example/laravel/public
+
+        # For WordPress/Standard PHP:
+        ./create-site.ps1 blog.test example/wordpress
+        ```
+    *(This creates the Nginx config and restarts the server automatically.)*
+
+### Advanced: Mapping Scattered Projects
+If you have a project completely outside your main `PROJECTS_ROOT` (e.g., on an external drive), then use the `docker-compose.override.yaml` method described below.
+
+#### Automated Mapping (Recommended for Scattered Projects)
+If you have a project outside your main folder, use the helper script to add it automatically:
+
+*   **Mac/Linux**:
+    ```bash
+    ./add-path.sh /Users/username/Projects/example/laravel laravel-project
+    ```
+*   **Windows**:
+    ```powershell
+    ./add-path.ps1 "C:\Users\username\Projects\example\laravel" laravel-project
+    ```
+*(This adds the path to `docker-compose.override.yaml` and restarts Docker.)*
+
+#### Manual Mapping (Legacy)
 
 1.  Copy the example file:
     ```bash
@@ -68,30 +107,30 @@ If your projects are in different locations (e.g., `~/Projects/example1/laravel`
     services:
       nginx:
         volumes:
-          - /Users/username/Projects/example1/laravel:/var/www/example1-test
-          - /Users/username/Projects/example2/wordpress:/var/www/example2-test
+          - /Users/username/Projects/example/laravel:/var/www/laravel-project
+          - /Users/username/Projects/example/wordpress:/var/www/wordpress-project
       php85:
         volumes:
-          - /Users/username/Projects/example1/laravel:/var/www/example1-test
-          - /Users/username/Projects/example2/wordpress:/var/www/example2-test
+          - /Users/username/Projects/example/laravel:/var/www/laravel-project
+          - /Users/username/Projects/example/wordpress:/var/www/wordpress-project
     ```
 3.  Restart Docker: `docker-compose up -d`.
-4.  Your project will be available at `http://localhost/example1-test` and `http://localhost/example2-test`.
+4.  Your project will be available at `http://localhost/laravel-project` and `http://localhost/wordpress-project`.
 
-### Custom Domains (e.g., project.test)
-To use a custom domain like `http://example1.test` instead of `http://localhost/example1-test`:
+### Custom Domains (e.g., laravel.test)
+To use a custom domain like `http://laravel.test` instead of `http://localhost/laravel-project`:
 
 1.  **Add Domain to Hosts File**:
     *   **Mac/Linux**: Edit `/etc/hosts`
     *   **Windows**: Edit `C:\Windows\System32\drivers\etc\hosts`
-    *   Add the line: `127.0.0.1 example1.test`
+    *   Add the line: `127.0.0.1 laravel.test`
 
 2.  **Create Nginx Config**:
     *   Go to `services/nginx/conf.d/`
-    *   Copy `project.conf.example` to `example1-test.conf`
-    *   Edit `example1-test.conf`:
-        *   Change `server_name` to `example1.test`
-        *   Change `root` to `/var/www/example1-test`
+    *   Copy `project.conf.example` to `laravel.conf`
+    *   Edit `laravel.conf`:
+        *   Change `server_name` to `laravel.test`
+        *   Change `root` to `/var/www/laravel-project/public`
         *   (Optional) Change `fastcgi_pass` to use a different PHP version.
 
 3.  **Restart Nginx**:
