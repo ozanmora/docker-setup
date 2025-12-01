@@ -55,8 +55,6 @@ docker-setup/
 └── .env                # Environment variables (PROJECTS_ROOT defined here)
 ```
 
-```
-
 ### Advanced: Mapping Scattered Projects (Recommended)
 If your projects are in different locations (e.g., `~/Projects/example1/laravel` and `~/Projects/example2/wordpress`), you should use a **`docker-compose.override.yaml`** file instead of symlinks. Symlinks often fail with Docker because the container cannot see the file paths on your host machine.
 
