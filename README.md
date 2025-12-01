@@ -4,7 +4,8 @@ A complete, Docker-based development environment for PHP projects. This setup in
 
 ## Features
 
--   **Nginx**: Web server configured to handle multiple sites.
+-   **Nginx**: Web server configured to handle multiple sites (HTTP & HTTPS).
+-   **SSL/HTTPS**: Auto-generated self-signed certificates for `*.test` and `localhost`.
 -   **Multiple PHP Versions**:
     -   PHP 8.5 (Latest)
     -   PHP 8.2 (Stable)
@@ -38,6 +39,17 @@ A complete, Docker-based development environment for PHP projects. This setup in
     ```bash
     docker-compose up -d
     ```
+
+4.  **Generate SSL Certificates (Optional but Recommended):**
+    Run the helper script to generate a self-signed wildcard certificate for `*.test` and `localhost`:
+    ```bash
+    ./generate-ssl.sh
+    ```
+    *   **Windows**:
+        ```powershell
+        ./generate-ssl.ps1
+        ```
+        *(Requires OpenSSL, which comes with Git for Windows)*
 
 ## Usage
 

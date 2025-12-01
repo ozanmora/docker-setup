@@ -20,8 +20,12 @@ if (Test-Path $ConfigFile) {
 $Content = @"
 server {
     listen 80;
+    listen 443 ssl;
     server_name $Domain;
     root /var/www/$ProjectPath;
+
+    ssl_certificate /etc/nginx/certs/server.crt;
+    ssl_certificate_key /etc/nginx/certs/server.key;
 
     index index.php index.html;
 

@@ -22,8 +22,12 @@ fi
 cat > "$CONFIG_FILE" <<EOF
 server {
     listen 80;
+    listen 443 ssl;
     server_name ${DOMAIN};
     root /var/www/${PROJECT_PATH};
+
+    ssl_certificate /etc/nginx/certs/server.crt;
+    ssl_certificate_key /etc/nginx/certs/server.key;
 
     index index.php index.html;
 

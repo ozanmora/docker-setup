@@ -5,9 +5,11 @@ services:
     container_name: dev_nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ${PROJECTS_ROOT}:/var/www:delegated
       - ./services/nginx/conf.d:/etc/nginx/conf.d
+      - ./certs:/etc/nginx/certs
     depends_on:
       - php85
       - php82
