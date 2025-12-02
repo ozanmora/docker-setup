@@ -35,21 +35,33 @@ A complete, Docker-based development environment for PHP projects. This setup in
     ```
     *Note: You can adjust database root password in `.env` if needed.*
 
-3.  **Start the Environment:**
+3.  **Prepare Scripts:**
+    *   **Mac/Linux**: Make script executable:
+        ```bash
+        chmod +x cli.sh
+        ```
+    *   **Windows**: Allow local scripts:
+        ```powershell
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+        ```
+
+4.  **Start the Environment:**
     ```bash
     docker-compose up -d
     ```
 
-4.  **Generate SSL Certificates (Optional but Recommended):**
-    Run the helper script to generate a self-signed wildcard certificate for `*.test` and `localhost`:
+5.  **Generate SSL Certificates (Optional):**
+    *By default, the setup uses HTTP. If you want HTTPS:*
     ```bash
-    ./generate-ssl.sh
+    ./cli.sh ssl-generate
+    # Windows: ./cli.ps1 ssl-generate
     ```
-    *   **Windows**:
-        ```powershell
-        ./generate-ssl.ps1
-        ```
-        *(Requires OpenSSL, which comes with Git for Windows)*
+    *Then trust the certificate:*
+    ```bash
+    sudo ./cli.sh ssl-trust
+    # Windows: ./cli.ps1 ssl-trust
+    ```
+    *Then uncomment the SSL lines in your Nginx config files and restart Nginx.*
 
 ## Usage
 
@@ -75,19 +87,11 @@ Instead of adding every single project to `docker-compose.override.yaml`, the be
 3.  **Create Site**:
     *   **Mac/Linux**:
         ```bash
-        # For Laravel (append /public):
-        ./create-site.sh laravel.test example/laravel/public
-
-        # For WordPress/Standard PHP:
-        ./create-site.sh blog.test example/wordpress
+        ./cli.sh create-site laravel.test example/laravel/public
         ```
-    *   **Windows (PowerShell)**:
+    *   **Windows**:
         ```powershell
-        # For Laravel (append /public):
-        ./create-site.ps1 laravel.test example/laravel/public
-
-        # For WordPress/Standard PHP:
-        ./create-site.ps1 blog.test example/wordpress
+        ./cli.ps1 create-site laravel.test example/laravel/public
         ```
     *(This creates the Nginx config and restarts the server automatically.)*
 
@@ -99,11 +103,11 @@ If you have a project outside your main folder, use the helper script to add it 
 
 *   **Mac/Linux**:
     ```bash
-    ./add-path.sh /Users/username/Projects/example/laravel laravel-project
+    ./cli.sh add-path /Users/username/Projects/example/laravel laravel-project
     ```
 *   **Windows**:
     ```powershell
-    ./add-path.ps1 "C:\Users\username\Projects\example\laravel" laravel-project
+    ./cli.ps1 add-path "C:\Users\username\Projects\example\laravel" laravel-project
     ```
 *(This adds the path to `docker-compose.override.yaml` and restarts Docker.)*
 
@@ -132,6 +136,16 @@ If you have a project outside your main folder, use the helper script to add it 
 ### Custom Domains (e.g., laravel.test)
 To use a custom domain like `http://laravel.test` instead of `http://localhost/laravel-project`:
 
+> [!TIP]
+> **Enable HTTPS:** To enable HTTPS for a site:
+> 1.  Run `./cli.sh ssl-generate`.
+> 2.  Uncomment the `listen 443 ssl` and `ssl_certificate` lines in `services/nginx/conf.d/YOUR_SITE.conf`.
+> 3.  Restart Nginx: `docker-compose restart nginx`.
+>
+> **Remove SSL Warnings:** After enabling HTTPS, you can trust the certificate to remove browser warnings:
+> *   **Mac**: `sudo ./cli.sh ssl-trust`
+> *   **Windows**: `./cli.ps1 ssl-trust`
+> *   **Firefox**: Type `about:config`, set `security.enterprise_roots.enabled` to `true`, and restart Firefox.
 1.  **Add Domain to Hosts File**:
     *   **Mac/Linux**: Edit `/etc/hosts`
     *   **Windows**: Edit `C:\Windows\System32\drivers\etc\hosts`

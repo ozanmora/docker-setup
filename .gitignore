@@ -1,6 +1,11 @@
 .DS_Store
 .env
-www/*
-!www/.gitkeep
 docker-compose.override.yaml
 
+# Projects
+www/*
+!www/.gitkeep
+
+# Certificates
+certs/*
+!certs/.gitkeep
